@@ -1170,6 +1170,7 @@ disable_x11_tests()
 test "$using_x11" = yes && USING_X11=TRUE
 
 if test "$using_freetype_fontconfig" = yes; then
+    USE_HEADLESS_CODE=TRUE
     if test "$using_headless_plugin" = yes; then
         AC_DEFINE(ENABLE_HEADLESS)
         ENABLE_HEADLESS=TRUE
@@ -1177,6 +1178,7 @@ if test "$using_freetype_fontconfig" = yes; then
 fi
 
 AC_SUBST(ENABLE_HEADLESS)
+AC_SUBST(USE_HEADLESS_CODE)
 
 AC_MSG_NOTICE([VCL platform uses freetype+fontconfig: $using_freetype_fontconfig])
 AC_MSG_NOTICE([VCL platform uses headless plugin: $using_headless_plugin])
@@ -5206,10 +5208,6 @@ emscripten*)
     ;;
 esac
 
-if test "$with_x" = "no"; then
-    AC_MSG_ERROR([Use --disable-gui instead. How can we get rid of this option? No idea where it comes from.])
-fi
-
 DISABLE_GUI=""
 if test "$enable_gui" = "no"; then
     if test "$using_x11" != yes; then
@@ -5221,6 +5219,10 @@ else
     AC_DEFINE(HAVE_FEATURE_UI)
 fi
 AC_SUBST(DISABLE_GUI)
+
+if test "$with_x" = "no"; then
+    USING_X11=
+fi
 
 if test "$using_x11" = yes; then
     if test "$USING_X11" = TRUE; then
@@ -5510,6 +5512,7 @@ if test "$cross_compiling" = "yes"; then
         --enable-icecream="$enable_icecream" \
         --without-doxygen \
         --without-webdav \
+        --without-x \
         --with-parallelism="$with_parallelism" \
         --with-theme="$with_theme" \
         --with-tls=openssl \
